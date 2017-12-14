@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<style>
+	table {
+	    font-family: arial, sans-serif;
+	    border-collapse: collapse;
+	    width: 100%;
+	}
+	
+	td, th {
+	    border: 1px solid #dddddd;
+	    text-align: left;
+	    padding: 8px;
+	}
+	
+	tr:nth-child(even) {
+	    background-color: #dddddd;
+	}
+</style>
+
+<Div>
+	<table style="width:100%">
+		<tr>
+	    <th>Job Name</th>
+	    <th>Description</th>
+	    <th>Action</th>
+	  </tr>
+	  {% for jobs in all_jobs %}
+		  <tr>
+		    <td>{{jobs.name}}</td>
+		    <td>{{jobs.description}}</td>
+		    <td class="myVal"><a class="myVal" href="{% url 'recruitment:apply_jobs' %}" data-id="{{jobs.id}}">Apply job</a></td>
+		  </tr>
+	  {% endfor %}
+	</table>
+</Div>
+<script>
+
+$('.myVal').click(function(){
+    
+    self = $(this);
+    var JobId = self.attr('data-id');
+        vals = {
+                'JobId':JobId,
+                }
+        $.ajax({
+                url: "{% url 'recruitment:apply_jobs' %}",
+                data: vals,
+                method: 'GET',
+                dataType: 'json',
+                context: self,
+                success: function(json){
+                    dismiss_loading_dialog();
+                    if (json.status === 0){
+                    	var cleaned_url  = "{% url 'recruitment:apply_jobs' %}".replace(/&amp;/g, '&');
+                		window.location.href = cleaned_url ;
+                        }
+                        else{
+                            }
+                },
+                error: function() {
+                },
+        });
+    
+});
+
+</script>
+
+
+{% endblock %}
+
+
+
+
